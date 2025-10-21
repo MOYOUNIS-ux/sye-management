@@ -1,579 +1,185 @@
-
-<!doctype html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SYE Management — نظام فواتير ومصروفات</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%233aa0c9%22/></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800&display=swap" rel="stylesheet">
-  <!-- html2pdf for PDF export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-  <style>
-    :root{
-      --bg:#f7fbfc;
-      --card:#ffffff;
-      --muted:#64707a;
-      --accent:#2aa6c6;
-      --accent-2:#6fd1c0;
-      --radius:12px;
-      --shadow: 0 10px 30px rgba(17,24,39,0.06);
-      --success:#16a34a;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{font-family:'Tajawal',sans-serif;background:var(--bg);margin:0;color:#0b2a33;padding:28px; -webkit-font-smoothing:antialiased;}
-    .wrap{max-width:1100px;margin:0 auto;animation:fadeIn 450ms ease both}
-    @keyframes fadeIn{from{opacity:0; transform: translateY(6px)} to{opacity:1; transform:none}}
-    header{display:flex;align-items:center;gap:16px}
-    header img{height:56px;filter:drop-shadow(0 4px 12px rgba(42,166,198,0.12));border-radius:8px}
-    header h1{margin:0;font-size:20px;color:#08303a}
-    .muted{color:var(--muted);font-size:13px}
-    nav{display:flex;gap:10px;margin-top:18px;align-items:center}
-    .tab{padding:8px 14px;border-radius:999px;background:transparent;border:1px solid transparent;cursor:pointer;color:var(--muted);font-weight:700;transition:all 200ms ease}
-    .tab:hover{transform:translateY(-2px)}
-    .tab.active{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff;box-shadow:var(--shadow)}
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-top:14px;transition:transform 160ms ease}
-    .card:hover{transform:translateY(-4px)}
-    .row{display:flex;gap:12px;align-items:center}
-    .col{flex:1}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text], input[type=number], select, textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef2;background:transparent;color:inherit;outline:none;transition:box-shadow 120ms ease}
-    input:focus, select:focus{box-shadow:0 6px 18px rgba(42,166,198,0.08);border-color:var(--accent)}
-    button{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;transition:transform 120ms ease, box-shadow 120ms ease}
-    button:active{transform:translateY(1px)}
-    .btn-primary{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff;box-shadow:0 8px 24px rgba(42,166,198,0.12)}
-    .btn-primary:hover{filter:brightness(1.03)}
-    .btn-ghost{background:transparent;color:var(--muted);border:1px solid #e6eef2}
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    th,td{padding:8px;text-align:right;border-bottom:1px solid #f0f4f6;font-size:14px}
-    .totals{display:flex;gap:12px;justify-content:flex-end;margin-top:12px}
-    .box{background:#fbfeff;padding:10px 14px;border-radius:10px;border:1px solid #eef6f8}
-    footer{text-align:center;margin-top:26px;color:var(--muted);font-size:13px}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,10,12,0.45);z-index:999}
-    .modal .panel{width:900px;max-width:95%;background:#fff;border-radius:12px;padding:18px;direction:rtl;color:#123;animation:slideDown 280ms cubic-bezier(.2,.9,.3,1)}
-    @keyframes slideDown{from{opacity:0; transform: translateY(-8px)} to{opacity:1; transform:none}}
-    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
-    .small{font-size:13px;color:var(--muted)}
-    /* responsive */
-    @media(max-width:900px){.row{flex-direction:column}.actions{flex-direction:column-reverse;align-items:stretch} header{flex-direction:column;align-items:flex-start}}
-    /* subtle hover for inputs */
-    .card .row.card{background:#fbfeff;padding:12px;border-radius:10px;border:1px solid #f1f6f8}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYE Management</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f9f9f9;color:#333;margin:0;padding:0;}
+header{background:#4A90E2;color:#fff;padding:20px;text-align:center;font-size:24px;font-weight:bold;display:flex;align-items:center;justify-content:center;}
+header img{height:50px;margin-right:10px;}
+nav{display:flex;justify-content:center;background:#e6f0ff;}
+nav button{background:#4A90E2;color:#fff;border:none;padding:10px 20px;margin:5px;cursor:pointer;border-radius:5px;transition:0.3s;}
+nav button:hover{background:#357ABD;}
+.container{padding:20px;}
+.tab{display:none;}
+label{display:block;margin:8px 0;font-weight:bold;}
+input, select{padding:6px;width:100%;margin-bottom:10px;border:1px solid #ccc;border-radius:4px;}
+button.action{background:#28a745;margin-top:10px;}
+button.action:hover{background:#218838;}
+.table-wrapper{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+table, th, td{border:1px solid #ccc;}
+th, td{padding:8px;text-align:center;}
+.footer{text-align:center;margin-top:30px;color:#999;font-size:14px;}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <img src="https://syecommunity.com/wp-content/uploads/2020/12/SYE-Logo.png" alt="logo">
-      <div>
-        <h1>نظام فواتير ومصروفات</h1>
-        <div class="muted">فاتح - عصري · متصل بـ Google Sheets · تصميم: Mohamed Younis</div>
-      </div>
-    </header>
+<header>
+<img src="https://syecommunity.com/wp-content/uploads/2020/12/SYE-Logo.png" alt="SYE Logo">
+SYE Management
+</header>
+<nav>
+<button onclick="showTab('sales')">المبيعات</button>
+<button onclick="showTab('expenses')">المصروفات</button>
+</nav>
 
-    <nav>
-      <div class="tab active" id="tab-sales" onclick="showTab('sales')">المبيعات</div>
-      <div class="tab" id="tab-expenses" onclick="showTab('expenses')">المصروفات</div>
-      <div style="flex:1"></div>
-      <div class="muted">النسخة: نهائية</div>
-    </nav>
+<div class="container">
 
-    <!-- SALES -->
-    <section id="sales" class="card" aria-labelledby="tab-sales">
-      <div class="row" style="align-items:flex-end">
-        <div style="width:160px">
-          <label>رقم الفاتورة</label>
-          <input type="text" id="invoiceNo" readonly>
-        </div>
-        <div style="width:200px">
-          <label>التاريخ</label>
-          <input type="text" id="invoiceDate" readonly>
-        </div>
-        <div class="col">
-          <label>اسم العميل</label>
-          <input type="text" id="custName" placeholder="مثال: أحمد علي">
-        </div>
-        <div style="width:220px">
-          <label>واتساب (بدون +)</label>
-          <input type="text" id="custPhone" placeholder="20123XXXXXXXX">
-        </div>
-      </div>
+<!-- صفحة المبيعات -->
+<div id="sales" class="tab">
+  <h2>فاتورة المبيعات</h2>
+  <label>اسم العميل:</label>
+  <input type="text" id="customer">
+  <label>رقم الهاتف:</label>
+  <input type="text" id="phone">
 
-      <div style="margin-top:14px" class="card">
-        <h4 class="small">الخدمات</h4>
-        <div id="servicesList"></div>
-        <div style="margin-top:10px" class="row">
-          <div style="flex:0 0 180px"><button class="btn-ghost" onclick="addServiceRow()">+ إضافة خدمة</button></div>
-          <div style="flex:1"></div>
-        </div>
+  <label>الخدمات:</label>
+  <select id="services" multiple size="10">
+    <option>Programs</option>
+    <option>Conversation Program</option>
+    <option>Teens Program</option>
+    <option>Kids Program</option>
+    <option>Native Program</option>
+    <option>Speaking Club (adults)</option>
+    <option>Speaking Club (kids)</option>
+    <option>Business English</option>
+    <option>Business Writing</option>
+    <option>IELTS preparation</option>
+    <option>Placement test</option>
+    <option>Delay fees</option>
+    <option>SYE’s Certificate</option>
+    <option>Re-oral test</option>
+    <option>Re-do level</option>
+    <option>Late Exam</option>
+    <option>Versant Certificate</option>
+    <option>Make up session</option>
+    <option>Mock Exam</option>
+    <option>Practice Area</option>
+  </select>
 
-        <h4 style="margin-top:12px" class="small">الكتب (اختياري)</h4>
-        <div id="booksList"></div>
-        <div style="margin-top:10px" class="row">
-          <div style="flex:0 0 180px"><button class="btn-ghost" onclick="addBookRow()">+ إضافة كتاب</button></div>
-        </div>
+  <label>الكتب:</label>
+  <select id="books" multiple size="6">
+    <option>Level 1</option>
+    <option>Level 2</option>
+    <option>Level 3</option>
+    <option>Level 4</option>
+    <option>Level 5</option>
+    <option>Level 6</option>
+  </select>
 
-        <div style="margin-top:12px" class="row">
-          <div style="width:200px">
-            <label>المدفوع</label>
-            <input type="number" id="paidAmount" value="0" min="0">
-          </div>
-          <div class="col">
-            <label>ملاحظات</label>
-            <input type="text" id="saleNotes" placeholder="مثال: خصم / ملاحظات إضافية">
-          </div>
-        </div>
+  <label>السعر الإجمالي:</label>
+  <input type="number" id="total" value="0">
+  <label>المدفوع:</label>
+  <input type="number" id="paid" value="0">
+  <label>المستحق تلقائي:</label>
+  <input type="number" id="due" value="0" readonly>
+  <label>ملاحظات:</label>
+  <input type="text" id="notes">
 
-        <div class="totals" style="margin-top:14px">
-          <div class="box">الإجمالي: <strong id="grandTotal">0.00</strong> EGP</div>
-          <div class="box">المستحق: <strong id="dueAmount">0.00</strong> EGP</div>
-          <div class="box">الزيادة: <strong id="overpay">0.00</strong> EGP</div>
-        </div>
+  <button class="action" onclick="saveInvoice()">حفظ الفاتورة</button>
+</div>
 
-        <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
-          <button class="btn-ghost" onclick="previewInvoice()">👁️ معاينة</button>
-          <button class="btn-primary" onclick="saveSale()">💾 حفظ</button>
-          <button class="btn-ghost" onclick="resetSale()">إعادة تعيين</button>
-        </div>
+<!-- صفحة المصروفات -->
+<div id="expenses" class="tab">
+  <h2>تسجيل المصروفات</h2>
+  <label>البند:</label>
+  <select id="expenseCategory">
+    <option>غاز</option>
+    <option>كهرباء</option>
+    <option>مياه</option>
+    <option>إكراميات</option>
+    <option>انتقالات كتب</option>
+    <option>انتقالات موظفين</option>
+    <option>مشتريات بوفية</option>
+  </select>
+  <label>التفاصيل:</label>
+  <input type="text" id="expenseDetail">
+  <label>المبلغ:</label>
+  <input type="number" id="expenseAmount" value="0">
+  <label>ملاحظات:</label>
+  <input type="text" id="expenseNotes">
+  <button class="action" onclick="saveExpense()">حفظ المصروف</button>
+</div>
 
-        <div id="afterSaveSales" style="margin-top:12px;display:none;justify-content:flex-end;align-items:center;gap:8px">
-          <a id="waLink" class="btn-primary" target="_blank" style="text-decoration:none;padding:10px 12px;display:inline-block">📱 إرسال عبر واتساب</a>
-          <button class="btn-ghost" style="margin-left:8px" onclick="printInvoice()">🖨️ طباعة</button>
-          <button class="btn-ghost" style="margin-left:8px" onclick="downloadPDF()">📥 تحميل PDF</button>
-        </div>
-      </div>
-    </section>
+</div>
 
-    <!-- EXPENSES -->
-    <section id="expenses" class="card" style="display:none" aria-labelledby="tab-expenses">
-      <h3>تسجيل مصروف</h3>
-      <div class="row" style="margin-top:12px">
-        <div style="width:240px">
-          <label>البند</label>
-          <select id="expenseCategory"></select>
-        </div>
-        <div class="col">
-          <label>تفاصيل</label>
-          <input type="text" id="expenseDetail" placeholder="مثال: فاتورة كهرباء سبتمبر">
-        </div>
-        <div style="width:180px">
-          <label>المبلغ</label>
-          <input type="number" id="expenseAmount" value="0" min="0">
-        </div>
-      </div>
-
-      <div style="margin-top:12px" class="row">
-        <div class="col">
-          <label>ملاحظات</label>
-          <input type="text" id="expenseNotes" placeholder="ملاحظة إضافية">
-        </div>
-        <div style="width:220px;display:flex;align-items:end;justify-content:flex-end">
-          <button class="btn-primary" onclick="saveExpense()">💾 حفظ المصروف</button>
-        </div>
-      </div>
-
-      <div id="expenseSaved" style="margin-top:12px;display:none" class="muted">تم حفظ المصروف بنجاح</div>
-    </section>
-
-    <footer>
-      <div class="muted">Designed by Mohamed Younis</div>
-    </footer>
-  </div>
-
-  <!-- preview modal -->
-  <div class="modal" id="previewModal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="panel" id="previewContent">
-      <!-- invoice HTML will be injected here -->
-      <div class="actions" style="margin-top:12px">
-        <button class="btn-primary" onclick="confirmSaveFromPreview()">💾 حفظ و إرسال</button>
-        <button class="btn-ghost" onclick="downloadPDFFromPreview()">📥 تحميل PDF</button>
-        <button class="btn-ghost" onclick="printPreview()">🖨️ طباعة</button>
-        <button class="btn-ghost" onclick="closePreview()">إغلاق</button>
-      </div>
-    </div>
-  </div>
+<div class="footer">Designed by Mohamed Younis</div>
 
 <script>
-// ----- CONFIG -----
+// تبديل الصفحات
+function showTab(tabId){
+  document.querySelectorAll('.tab').forEach(t=>t.style.display='none');
+  document.getElementById(tabId).style.display='block';
+}
+showTab('sales'); // الصفحة الافتراضية
+
+// حساب المستحق تلقائي
+document.getElementById('paid').addEventListener('input',()=>{
+  const total = parseFloat(document.getElementById('total').value)||0;
+  const paid = parseFloat(document.getElementById('paid').value)||0;
+  document.getElementById('due').value = Math.max(0,total-paid);
+});
+
+// رابط سكربت Google Apps Script
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzC8lMFS1RJPk0ab21s-SqtmlzZtbqzE-ABN41hqbJqiUWjfg-wBX5zhR4Z5XDDVVFv/exec";
-  const START_INVOICE_NUMBER = 1000;
 
-// Services, books and expense categories
-const SERVICES = [
-  'Program','Conversation Program','Teens Program','Kids Program','Native Program',
-  'Speaking Club (adults)','Speaking Club (kids)','Business English','Business Writing',
-  'IELTS preparation','Placement test','Delay fees','SYE\\'s Certificate','Re-oral test',
-  'Re-do level','Late Exam','Versant Certificate','Make up session','Mock Exam','Practice Area'
-];
-const BOOKS = ['Book Level 1','Book Level 2','Book Level 3','Book Level 4','Book Level 5'];
-const EXP_CATS = ['غاز','كهرباء','مياه','إكراميات','انتقالات كتب','انتقالات موظفين','مشتريات بوفية','مصروفات أخرى'];
-
-/* ---------- UI helpers ---------- */
-function showTab(tab){
-  document.getElementById('sales').style.display = (tab==='sales')? 'block':'none';
-  document.getElementById('expenses').style.display = (tab==='expenses')? 'block':'none';
-  document.getElementById('tab-sales').classList.toggle('active', tab==='sales');
-  document.getElementById('tab-expenses').classList.toggle('active', tab==='expenses');
-}
-
-/* dynamic rows */
-function addServiceRow(defaultName, defaultQty=1, defaultPrice=0){
-  const container = document.getElementById('servicesList');
-  const wrapper = document.createElement('div');
-  wrapper.className='row card';
-  wrapper.style.marginTop='8px';
-  wrapper.style.alignItems='center';
-  wrapper.innerHTML = `
-    <div style="width:350px">
-      <label>الخدمة</label>
-      <select class="serviceName"></select>
-    </div>
-    <div style="width:120px">
-      <label>الكمية</label>
-      <input type="number" class="serviceQty" value="${defaultQty}" min="0">
-    </div>
-    <div style="width:180px">
-      <label>السعر</label>
-      <input type="number" class="servicePrice" value="${defaultPrice}" min="0">
-    </div>
-    <div style="width:100px;display:flex;align-items:flex-end;justify-content:flex-end">
-      <button class="btn-ghost" onclick="removeRow(this)">حذف</button>
-    </div>
-  `;
-  container.appendChild(wrapper);
-  const sel = wrapper.querySelector('.serviceName');
-  SERVICES.forEach(s=>{const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o)});
-  if(defaultName) sel.value = defaultName;
-  wrapper.querySelectorAll('input,select').forEach(el=>el.addEventListener('input', calculateTotals));
-  calculateTotals();
-}
-
-function addBookRow(defaultName, defaultQty=1, defaultPrice=0){
-  const container = document.getElementById('booksList');
-  const wrapper = document.createElement('div');
-  wrapper.className='row card';
-  wrapper.style.marginTop='8px';
-  wrapper.innerHTML = `
-    <div style="width:350px">
-      <label>الكتاب</label>
-      <select class="bookName"></select>
-    </div>
-    <div style="width:120px">
-      <label>الكمية</label>
-      <input type="number" class="bookQty" value="${defaultQty}" min="0">
-    </div>
-    <div style="width:180px">
-      <label>السعر</label>
-      <input type="number" class="bookPrice" value="${defaultPrice}" min="0">
-    </div>
-    <div style="width:100px;display:flex;align-items:flex-end;justify-content:flex-end">
-      <button class="btn-ghost" onclick="removeRow(this)">حذف</button>
-    </div>
-  `;
-  container.appendChild(wrapper);
-  const sel = wrapper.querySelector('.bookName');
-  BOOKS.forEach(s=>{const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o)});
-  if(defaultName) sel.value = defaultName;
-  wrapper.querySelectorAll('input,select').forEach(el=>el.addEventListener('input', calculateTotals));
-  calculateTotals();
-}
-
-function removeRow(btn){
-  const card = btn.closest('.card');
-  card.remove();
-  calculateTotals();
-}
-
-/* totals */
-function calculateTotals(){
-  let total = 0;
-  document.querySelectorAll('#servicesList .card').forEach(c=>{
-    const q = parseFloat(c.querySelector('.serviceQty').value || 0);
-    const p = parseFloat(c.querySelector('.servicePrice').value || 0);
-    total += q*p;
-  });
-  document.querySelectorAll('#booksList .card').forEach(c=>{
-    const q = parseFloat(c.querySelector('.bookQty').value || 0);
-    const p = parseFloat(c.querySelector('.bookPrice').value || 0);
-    total += q*p;
-  });
-  document.getElementById('grandTotal').innerText = total.toFixed(2);
-  const paid = parseFloat(document.getElementById('paidAmount').value || 0);
-  const due = Math.max(0, total - paid);
-  const over = Math.max(0, paid - total);
-  document.getElementById('dueAmount').innerText = due.toFixed(2);
-  document.getElementById('overpay').innerText = over.toFixed(2);
-}
-
-/* Preview / print / PDF helpers */
-function escapeHtml(s){ if(!s && s!==0) return ''; return String(s).replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
-
-function buildInvoiceHTML(invoice){
-  const items = invoice.items.map(it => `<tr><td style="width:60%">${escapeHtml(it.name)}</td><td style="width:15%">${it.qty}</td><td style="width:25%">${(it.qty*it.price).toFixed(2)} EGP</td></tr>`).join('');
-  return `
-    <div style="padding:12px;font-family:inherit;color:#123">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <img src="https://syecommunity.com/wp-content/uploads/2020/12/SYE-Logo.png" style="height:48px" />
-        </div>
-        <div style="text-align:left">
-          <div style="font-weight:800;color:#0b3b47">Invoice / فاتورة</div>
-          <div class="small muted">No: ${invoice.invoiceNo}</div>
-          <div class="small muted">${invoice.date}</div>
-        </div>
-      </div>
-
-      <hr style="margin:12px 0;border:none;border-top:1px solid #eef6f8" />
-      <div style="display:flex;gap:12px;justify-content:space-between">
-        <div>
-          <div><strong>العميل:</strong> ${escapeHtml(invoice.customer)}</div>
-          <div class="muted small">واتساب: ${escapeHtml(invoice.phone || '-')}</div>
-          <div class="muted small">ملاحظات: ${escapeHtml(invoice.notes || '-')}</div>
-        </div>
-        <div style="text-align:left">
-          <div><strong>الإجمالي:</strong> ${invoice.total.toFixed(2)} EGP</div>
-          <div class="muted small"><strong>المدفوع:</strong> ${invoice.paid.toFixed(2)} EGP</div>
-          <div class="muted small"><strong>المتبقي:</strong> ${invoice.due.toFixed(2)} EGP</div>
-        </div>
-      </div>
-
-      <table style="margin-top:12px;width:100%;border-collapse:collapse">
-        <thead>
-          <tr><th style="text-align:right;padding:8px;background:#fbfeff;border:1px solid #f0f6f8">الخدمة / الكتاب</th><th style="padding:8px;background:#fbfeff;border:1px solid #f0f6f8">الكمية</th><th style="padding:8px;background:#fbfeff;border:1px solid #f0f6f8">المجموع</th></tr>
-        </thead>
-        <tbody>${items}</tbody>
-      </table>
-
-      <div style="margin-top:18px;text-align:center;color:#8896a0">Thank you / شكراً لتعاملكم معنا</div>
-      <div style="margin-top:6px;text-align:center;color:#b3c1c7;font-size:12px">Designed by Mohamed Younis</div>
-    </div>
-  `;
-}
-
-function previewInvoice(){
-  calculateTotals();
-  const invoice = gatherInvoice(false);
-  const html = buildInvoiceHTML(invoice);
-  // remove previous preview nodes (except actions)
-  const container = document.getElementById('previewContent');
-  Array.from(container.children).forEach(ch => { if(!ch.classList.contains('actions')) ch.remove(); });
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  container.prepend(div);
-  const modal = document.getElementById('previewModal');
-  modal.style.display = 'flex';
-  modal.setAttribute('aria-hidden','false');
-}
-
-function closePreview(){ const modal = document.getElementById('previewModal'); modal.style.display='none'; modal.setAttribute('aria-hidden','true'); }
-
-function printPreview(){
-  const modal = document.getElementById('previewContent');
-  const content = modal.querySelector('div').innerHTML;
-  const w = window.open('','printWindow','width=900,height=700');
-  w.document.write('<html dir="rtl"><head><meta charset="utf-8"><title>Print</title></head><body>'+content+'</body></html>');
-  w.document.close();
-  w.focus();
-  setTimeout(()=>{ w.print(); }, 500);
-}
-
-function downloadPDFFromPreview(){
-  const modal = document.getElementById('previewContent');
-  const content = modal.querySelector('div').innerHTML;
-  const el = document.createElement('div'); el.innerHTML = content; document.body.appendChild(el);
-  const opt = { margin:0.4, filename: 'invoice.pdf', image:{ type:'jpeg', quality:0.98 }, html2canvas:{ scale:2 }, jsPDF:{unit:'in',format:'a4',orientation:'portrait'} };
-  html2pdf().set(opt).from(el).save().then(()=>el.remove());
-}
-
-/* helper to print/download from main UI */
-function printInvoice(){ previewInvoice(); setTimeout(()=>printPreview(),300); }
-function downloadPDF(){ previewInvoice(); setTimeout(()=>downloadPDFFromPreview(),300); }
-
-/* gather invoice object from form */
-function gatherInvoice(includeInvoiceNo=true){
-  const inv = {};
-  inv.invoiceNo = document.getElementById('invoiceNo').value || '';
-  inv.date = document.getElementById('invoiceDate').value || new Date().toLocaleString();
-  inv.customer = document.getElementById('custName').value;
-  inv.phone = document.getElementById('custPhone').value;
-  inv.notes = document.getElementById('saleNotes').value;
-  inv.items = [];
-  document.querySelectorAll('#servicesList .card').forEach(c=>{
-    const name = c.querySelector('.serviceName').value;
-    const qty = parseFloat(c.querySelector('.serviceQty').value||0);
-    const price = parseFloat(c.querySelector('.servicePrice').value||0);
-    if(qty>0 && price>=0) inv.items.push({type:'service',name,qty,price});
-  });
-  document.querySelectorAll('#booksList .card').forEach(c=>{
-    const name = c.querySelector('.bookName').value;
-    const qty = parseFloat(c.querySelector('.bookQty').value||0);
-    const price = parseFloat(c.querySelector('.bookPrice').value||0);
-    if(qty>0 && price>=0) inv.items.push({type:'book',name,qty,price});
-  });
-  inv.total = parseFloat(document.getElementById('grandTotal').innerText || 0);
-  inv.paid = parseFloat(document.getElementById('paidAmount').value || 0);
-  inv.due = parseFloat(document.getElementById('dueAmount').innerText || 0);
-  inv.overpay = parseFloat(document.getElementById('overpay').innerText || 0);
-  return inv;
-}
-
-/* ========== SAVE SALE ========== */
-async function saveSale(){
-  calculateTotals();
-  const inv = gatherInvoice();
-  if(!inv.customer){ alert('ادخل اسم العميل'); return; }
+// حفظ الفاتورة
+function saveInvoice(){
+  const customer = document.getElementById('customer').value;
+  const phone = document.getElementById('phone').value;
+  const services = Array.from(document.getElementById('services').selectedOptions).map(o=>o.value);
+  const books = Array.from(document.getElementById('books').selectedOptions).map(o=>o.value);
+  const total = parseFloat(document.getElementById('total').value)||0;
+  const paid = parseFloat(document.getElementById('paid').value)||0;
+  const due = parseFloat(document.getElementById('due').value)||0;
+  const notes = document.getElementById('notes').value;
 
   const payload = {
-    sheet: 'Sales',
-    invoiceNo: inv.invoiceNo,
-    date: new Date().toISOString(),
-    customer: inv.customer,
-    phone: inv.phone,
-    items: inv.items,
-    total: inv.total,
-    paid: inv.paid,
-    due: inv.due,
-    overpay: inv.overpay,
-    notes: inv.notes
+    sheet:"Sales",
+    customer, phone,
+    items: services.concat(books),
+    total, paid, due, notes
   };
 
-  try{
-    const res = await fetch(SCRIPT_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const text = await res.text();
-    alert(text || 'تم الحفظ');
-    showAfterSave(inv);
-  }catch(e){
-    console.error(e);
-    alert('خطأ في الحفظ. تأكد من رابط الـ Web App ومنح الأذونات.');
-  }
+  fetch(SCRIPT_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(res=>res.text())
+  .then(txt=>alert(txt))
+  .catch(err=>alert('خطأ في الاتصال: '+err));
 }
 
-/* show whatsapp & export after save */
-function showAfterSave(inv){
-  const phone = (inv.phone || '').replace(/[^0-9]/g,'');
-  const msgLines = [];
-  msgLines.push(`فاتورة جديدة من SYE 🎓`);
-  msgLines.push(`Invoice No: #${inv.invoiceNo}`);
-  msgLines.push(`العميل: ${inv.customer}`);
-  msgLines.push(`---`);
-  inv.items.forEach(it => msgLines.push(`${it.name} x${it.qty} - ${(it.qty*it.price).toFixed(2)} EGP`));
-  msgLines.push(`---`);
-  msgLines.push(`الإجمالي: ${inv.total.toFixed(2)} EGP`);
-  msgLines.push(`المدفوع: ${inv.paid.toFixed(2)} EGP`);
-  msgLines.push(`المتبقي: ${inv.due.toFixed(2)} EGP`);
-  msgLines.push('');
-  msgLines.push('Thank you / شكراً لتعاملكم معنا');
+// حفظ المصروف
+function saveExpense(){
+  const category = document.getElementById('expenseCategory').value;
+  const detail = document.getElementById('expenseDetail').value;
+  const amount = parseFloat(document.getElementById('expenseAmount').value)||0;
+  const notes = document.getElementById('expenseNotes').value;
 
-  const waLink = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(msgLines.join('\\n'))}` : null;
-  if(waLink){
-    const a = document.getElementById('waLink');
-    a.href = waLink;
-    a.style.display='inline-block';
-  }
-  document.getElementById('afterSaveSales').style.display='flex';
-}
+  const payload = { sheet:"Expenses", category, detail, amount, notes };
 
-/* confirm save from preview button: save then open whatsapp */
-async function confirmSaveFromPreview(){
-  const inv = gatherInvoice();
-  await saveSale();
-  const phone = (inv.phone || '').replace(/[^0-9]/g,'');
-  if(phone){
-    const msg = buildWhatsappMessage(inv);
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-  }
-  closePreview();
+  fetch(SCRIPT_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(res=>res.text())
+  .then(txt=>alert(txt))
+  .catch(err=>alert('خطأ في الاتصال: '+err));
 }
-
-/* build whatsapp message bilingual */
-function buildWhatsappMessage(inv){
-  const lines = [];
-  lines.push(`فاتورة جديدة من SYE 🎓`);
-  lines.push(`Invoice No: #${inv.invoiceNo}`);
-  lines.push(`العميل: ${inv.customer}`);
-  lines.push('---');
-  inv.items.forEach(it => lines.push(`${it.name} x${it.qty} - ${(it.qty*it.price).toFixed(2)} EGP`));
-  lines.push('---');
-  lines.push(`الإجمالي: ${inv.total.toFixed(2)} EGP`);
-  lines.push(`Paid: ${inv.paid.toFixed(2)} EGP`);
-  lines.push(`Due: ${inv.due.toFixed(2)} EGP`);
-  lines.push('');
-  lines.push('Thank you / شكراً لتعاملكم معنا');
-  return lines.join('\\n');
-}
-
-/* ========== EXPENSES ========== */
-function populateExpenseCats(){
-  const sel = document.getElementById('expenseCategory');
-  sel.innerHTML = '';
-  EXP_CATS.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o) });
-}
-
-async function saveExpense(){
-  const expense = {
-    sheet: 'Expenses',
-    date: new Date().toISOString(),
-    category: document.getElementById('expenseCategory').value,
-    detail: document.getElementById('expenseDetail').value,
-    amount: parseFloat(document.getElementById('expenseAmount').value || 0),
-    notes: document.getElementById('expenseNotes').value
-  };
-  if(!expense.amount || expense.amount<=0){ alert('اكتب مبلغ صحيح'); return; }
-  try{
-    const res = await fetch(SCRIPT_URL, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(expense)
-    });
-    const text = await res.text();
-    document.getElementById('expenseSaved').style.display='block';
-    setTimeout(()=>document.getElementById('expenseSaved').style.display='none',3000);
-  }catch(e){ console.error(e); alert('حدث خطأ أثناء حفظ المصروف'); }
-}
-
-/* ========== invoice numbering support ========== */
-async function loadLastInvoiceNumber(){
-  document.getElementById('invoiceDate').value = new Date().toLocaleString();
-  try{
-    const res = await fetch(SCRIPT_URL + '?action=lastInvoice');
-    if(!res.ok) throw new Error('no');
-    const j = await res.json();
-    let last = parseInt(j.last || 0);
-    if(!last || last < START_INVOICE_NUMBER) last = START_INVOICE_NUMBER;
-    const next = last + 1;
-    document.getElementById('invoiceNo').value = next;
-  }catch(e){
-    const next = START_INVOICE_NUMBER + 1;
-    document.getElementById('invoiceNo').value = next;
-  }
-}
-
-/* reset sale */
-function resetSale(){
-  document.getElementById('custName').value = '';
-  document.getElementById('custPhone').value = '';
-  document.getElementById('saleNotes').value = '';
-  document.getElementById('paidAmount').value = 0;
-  document.getElementById('servicesList').innerHTML = '';
-  document.getElementById('booksList').innerHTML = '';
-  addServiceRow(); addBookRow(); calculateTotals();
-  document.getElementById('afterSaveSales').style.display='none';
-  loadLastInvoiceNumber();
-}
-
-/* init */
-function init(){
-  populateExpenseCats();
-  addServiceRow();
-  addBookRow();
-  calculateTotals();
-  loadLastInvoiceNumber();
-}
-document.addEventListener('input', function(e){ if(['paidAmount'].includes(e.target.id)) calculateTotals(); });
-init();
 </script>
 </body>
 </html>
