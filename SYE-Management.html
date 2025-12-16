@@ -1,578 +1,776 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SYE Management — نظام فواتير ومصروفات</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%233aa0c9%22/></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800&display=swap" rel="stylesheet">
-  <!-- html2pdf for PDF export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-  <style>
-    :root{
-      --bg:#f7fbfc;
-      --card:#ffffff;
-      --muted:#64707a;
-      --accent:#2aa6c6;
-      --accent-2:#6fd1c0;
-      --radius:12px;
-      --shadow: 0 10px 30px rgba(17,24,39,0.06);
-      --success:#16a34a;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{font-family:'Tajawal',sans-serif;background:var(--bg);margin:0;color:#0b2a33;padding:28px; -webkit-font-smoothing:antialiased;}
-    .wrap{max-width:1100px;margin:0 auto;animation:fadeIn 450ms ease both}
-    @keyframes fadeIn{from{opacity:0; transform: translateY(6px)} to{opacity:1; transform:none}}
-    header{display:flex;align-items:center;gap:16px}
-    header img{height:56px;filter:drop-shadow(0 4px 12px rgba(42,166,198,0.12));border-radius:8px}
-    header h1{margin:0;font-size:20px;color:#08303a}
-    .muted{color:var(--muted);font-size:13px}
-    nav{display:flex;gap:10px;margin-top:18px;align-items:center}
-    .tab{padding:8px 14px;border-radius:999px;background:transparent;border:1px solid transparent;cursor:pointer;color:var(--muted);font-weight:700;transition:all 200ms ease}
-    .tab:hover{transform:translateY(-2px)}
-    .tab.active{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff;box-shadow:var(--shadow)}
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-top:14px;transition:transform 160ms ease}
-    .card:hover{transform:translateY(-4px)}
-    .row{display:flex;gap:12px;align-items:center}
-    .col{flex:1}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type=text], input[type=number], select, textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef2;background:transparent;color:inherit;outline:none;transition:box-shadow 120ms ease}
-    input:focus, select:focus{box-shadow:0 6px 18px rgba(42,166,198,0.08);border-color:var(--accent)}
-    button{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;transition:transform 120ms ease, box-shadow 120ms ease}
-    button:active{transform:translateY(1px)}
-    .btn-primary{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff;box-shadow:0 8px 24px rgba(42,166,198,0.12)}
-    .btn-primary:hover{filter:brightness(1.03)}
-    .btn-ghost{background:transparent;color:var(--muted);border:1px solid #e6eef2}
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    th,td{padding:8px;text-align:right;border-bottom:1px solid #f0f4f6;font-size:14px}
-    .totals{display:flex;gap:12px;justify-content:flex-end;margin-top:12px}
-    .box{background:#fbfeff;padding:10px 14px;border-radius:10px;border:1px solid #eef6f8}
-    footer{text-align:center;margin-top:26px;color:var(--muted);font-size:13px}
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,10,12,0.45);z-index:999}
-    .modal .panel{width:900px;max-width:95%;background:#fff;border-radius:12px;padding:18px;direction:rtl;color:#123;animation:slideDown 280ms cubic-bezier(.2,.9,.3,1)}
-    @keyframes slideDown{from{opacity:0; transform: translateY(-8px)} to{opacity:1; transform:none}}
-    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
-    .small{font-size:13px;color:var(--muted)}
-    /* responsive */
-    @media(max-width:900px){.row{flex-direction:column}.actions{flex-direction:column-reverse;align-items:stretch} header{flex-direction:column;align-items:flex-start}}
-    /* subtle hover for inputs */
-    .card .row.card{background:#fbfeff;padding:12px;border-radius:10px;border:1px solid #f1f6f8}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SYE Management — نظام مبيعات وتحصيل موحد</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<style>
+/* CSS Styles */
+:root{--bg:#f7fbfc;--card:#fff;--muted:#64707a;--accent:#2aa6c6;--accent-2:#6fd1c0;--radius:12px;--shadow:0 10px 30px rgba(17,24,39,0.06);--success:#16a34a; --error: #dc2626;}
+*{box-sizing:border-box} html,body{height:100%} body{font-family:'Tajawal',sans-serif;background:var(--bg);margin:0;color:#0b2a33;padding:28px;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1100px;margin:0 auto;animation:fadeIn 450ms ease both} @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+header{display:flex;align-items:center;gap:16px; justify-content: space-between;} 
+header img{height:56px;filter:drop-shadow(0 4px 12px rgba(42,166,198,0.12));border-radius:8px} 
+header h1{margin:0;font-size:20px;color:#08303a} 
+.muted{color:var(--muted);font-size:13px} 
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-top:14px;transition:transform 160ms ease}
+.card:hover{transform:translateY(-4px)} 
+.row{display:flex;gap:12px;align-items:flex-end; margin-bottom: 12px;} 
+.col{flex:1} label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px} 
+
+/* Required Star Style */
+.required-star {
+    color: var(--error);
+    margin-right: 4px;
+    font-weight: 700;
+}
+
+/* === Unified Input Styles & LTR (Applied to all relevant form controls) === */
+input[type=text], input[type=number], input[type=date], select, textarea {
+    width:100%; padding:10px; border-radius:10px; 
+    border:2px solid var(--accent); 
+    background:transparent; 
+    color:inherit; outline:none; transition:box-shadow 120ms ease; 
+    direction:ltr; 
+    text-align:left;
+    -webkit-appearance: none; 
+    -moz-appearance: textfield; 
+} 
+/* Ensure Arabic text inputs align right */
+html[dir="rtl"] input#custName, html[dir="rtl"] textarea#saleNotes {
+    direction: rtl;
+    text-align: right;
+}
+html[dir="ltr"] input#custName, html[dir="ltr"] textarea#saleNotes {
+    direction: ltr;
+    text-align: left;
+}
+
+/* Specific adjustments for date and select to match unified style */
+input[type=date] { direction: ltr; text-align: left; }
+select {
+    appearance: none; 
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path fill="%2364707a" d="M0 0l5 6 5-6z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: left 10px center; 
+    padding-left: 25px; 
+    padding-right: 10px; 
+}
+html[dir="ltr"] select {
+    background-position: right 10px center; 
+    padding-left: 10px; 
+    padding-right: 25px;
+}
+
+
+input:focus, select:focus, textarea:focus{box-shadow:0 6px 18px rgba(42,166,198,0.2);border-color:var(--accent)}
+button{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;transition:transform 120ms ease,box-shadow 120ms ease} button:active{transform:translateY(1px)}
+.btn-primary{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#fff;box-shadow:0 8px 24px rgba(42,166,198,0.12)}
+.btn-primary:hover{filter:brightness(1.03)} .btn-ghost{background:transparent;color:var(--muted);border:1px solid #e6eef2} 
+table{width:100%;border-collapse:collapse;margin-top:12px} 
+html[dir="rtl"] th, html[dir="rtl"] td{padding:8px;text-align:right;border-bottom:1px solid #f0f4f6;font-size:14px} 
+html[dir="ltr"] th, html[dir="ltr"] td{padding:8px;text-align:left;border-bottom:1px solid #f0f4f6;font-size:14px} 
+
+.totals{display:flex;gap:12px;justify-content:flex-end;margin-top:20px; padding-top: 10px; border-top: 1px solid #e6eef2;} 
+.box{background:#fbfeff;padding:10px 14px;border-radius:10px;border:1px solid #eef6f8} 
+footer{text-align:center;margin-top:26px;color:var(--muted);font-size:13px}
+.small{font-size:13px;color:var(--muted)}
+@media(max-width:900px){.row{flex-direction:column}.actions{flex-direction:column-reverse;align-items:stretch} header{flex-direction:column;align-items:flex-start}}
+.card .row.card{background:#fbfeff;padding:12px;border-radius:10px;border:1px solid #f1f6f8}
+.alert-success{background:var(--success);color:#fff;padding:10px;border-radius:10px;text-align:center;margin-top:12px}
+
+/* Consistency classes */
+.f-1_4 { flex: 1 1 23%; } 
+.f-1_3 { flex: 1 1 30%; } 
+
+/* Style for Manual Totals Input */
+.manual-total-input {
+    background: #fff; 
+    font-weight: 700;
+}
+</style>
 </head>
-<body>
-  <div class="wrap">
-    <header>
-      <img src="https://syecommunity.com/wp-content/uploads/2020/12/SYE-Logo.png" alt="logo">
-      <div>
-        <h1>نظام فواتير ومصروفات</h1>
-        <div class="muted">فاتح - عصري · متصل بـ Google Sheets · تصميم: Mohamed Younis</div>
-      </div>
-    </header>
-
-    <nav>
-      <div class="tab active" id="tab-sales" onclick="showTab('sales')">المبيعات</div>
-      <div class="tab" id="tab-expenses" onclick="showTab('expenses')">المصروفات</div>
-      <div style="flex:1"></div>
-      <div class="muted">النسخة: نهائية</div>
-    </nav>
-
-    <!-- SALES -->
-    <section id="sales" class="card" aria-labelledby="tab-sales">
-      <div class="row" style="align-items:flex-end">
-        <div style="width:160px">
-          <label>رقم الفاتورة</label>
-          <input type="text" id="invoiceNo" readonly>
+<body data-lang="ar">
+<div class="wrap">
+<header>
+    <div style="display:flex; align-items: center; gap: 16px;">
+        <img src="https://syecommunity.com/wp-content/uploads/2020/12/SYE-Logo.png" alt="logo">
+        <div>
+            <h1 id="headerTitle">نظام المبيعات وتسجيل التحصيل</h1>
+            <div class="muted" id="headerSubtitle">فاتورة وعمليات CRM مدمجة · تصميم: Mohamed Younis</div>
         </div>
-        <div style="width:200px">
-          <label>التاريخ</label>
-          <input type="text" id="invoiceDate" readonly>
-        </div>
-        <div class="col">
-          <label>اسم العميل</label>
-          <input type="text" id="custName" placeholder="مثال: أحمد علي">
-        </div>
-        <div style="width:220px">
-          <label>واتساب (بدون +)</label>
-          <input type="text" id="custPhone" placeholder="20123XXXXXXXX">
-        </div>
-      </div>
-
-      <div style="margin-top:14px" class="card">
-        <h4 class="small">الخدمات</h4>
-        <div id="servicesList"></div>
-        <div style="margin-top:10px" class="row">
-          <div style="flex:0 0 180px"><button class="btn-ghost" onclick="addServiceRow()">+ إضافة خدمة</button></div>
-          <div style="flex:1"></div>
-        </div>
-
-        <h4 style="margin-top:12px" class="small">الكتب (اختياري)</h4>
-        <div id="booksList"></div>
-        <div style="margin-top:10px" class="row">
-          <div style="flex:0 0 180px"><button class="btn-ghost" onclick="addBookRow()">+ إضافة كتاب</button></div>
-        </div>
-
-        <div style="margin-top:12px" class="row">
-          <div style="width:200px">
-            <label>المدفوع</label>
-            <input type="number" id="paidAmount" value="0" min="0">
-          </div>
-          <div class="col">
-            <label>ملاحظات</label>
-            <input type="text" id="saleNotes" placeholder="مثال: خصم / ملاحظات إضافية">
-          </div>
-        </div>
-
-        <div class="totals" style="margin-top:14px">
-          <div class="box">الإجمالي: <strong id="grandTotal">0.00</strong> EGP</div>
-          <div class="box">المستحق: <strong id="dueAmount">0.00</strong> EGP</div>
-          <div class="box">الزيادة: <strong id="overpay">0.00</strong> EGP</div>
-        </div>
-
-        <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
-          <button class="btn-ghost" onclick="previewInvoice()">👁️ معاينة</button>
-          <button class="btn-primary" onclick="saveSale()">💾 حفظ</button>
-          <button class="btn-ghost" onclick="resetSale()">إعادة تعيين</button>
-        </div>
-
-        <div id="afterSaveSales" style="margin-top:12px;display:none;justify-content:flex-end;align-items:center;gap:8px">
-          <a id="waLink" class="btn-primary" target="_blank" style="text-decoration:none;padding:10px 12px;display:inline-block">📱 إرسال عبر واتساب</a>
-          <button class="btn-ghost" style="margin-left:8px" onclick="printInvoice()">🖨️ طباعة</button>
-          <button class="btn-ghost" style="margin-left:8px" onclick="downloadPDF()">📥 تحميل PDF</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- EXPENSES -->
-    <section id="expenses" class="card" style="display:none" aria-labelledby="tab-expenses">
-      <h3>تسجيل مصروف</h3>
-      <div class="row" style="margin-top:12px">
-        <div style="width:240px">
-          <label>البند</label>
-          <select id="expenseCategory"></select>
-        </div>
-        <div class="col">
-          <label>تفاصيل</label>
-          <input type="text" id="expenseDetail" placeholder="مثال: فاتورة كهرباء سبتمبر">
-        </div>
-        <div style="width:180px">
-          <label>المبلغ</label>
-          <input type="number" id="expenseAmount" value="0" min="0">
-        </div>
-      </div>
-
-      <div style="margin-top:12px" class="row">
-        <div class="col">
-          <label>ملاحظات</label>
-          <input type="text" id="expenseNotes" placeholder="ملاحظة إضافية">
-        </div>
-        <div style="width:220px;display:flex;align-items:end;justify-content:flex-end">
-          <button class="btn-primary" onclick="saveExpense()">💾 حفظ المصروف</button>
-        </div>
-      </div>
-
-      <div id="expenseSaved" style="margin-top:12px;display:none" class="muted">تم حفظ المصروف بنجاح</div>
-    </section>
-
-    <footer>
-      <div class="muted">Designed by Mohamed Younis</div>
-    </footer>
-  </div>
-
-  <!-- preview modal -->
-  <div class="modal" id="previewModal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="panel" id="previewContent">
-      <!-- invoice HTML will be injected here -->
-      <div class="actions" style="margin-top:12px">
-        <button class="btn-primary" onclick="confirmSaveFromPreview()">💾 حفظ و إرسال</button>
-        <button class="btn-ghost" onclick="downloadPDFFromPreview()">📥 تحميل PDF</button>
-        <button class="btn-ghost" onclick="printPreview()">🖨️ طباعة</button>
-        <button class="btn-ghost" onclick="closePreview()">إغلاق</button>
-      </div>
     </div>
-  </div>
+    <div class="lang-selector">
+        <select id="langSelect" onchange="changeLanguage(this.value)" style="width: 120px; height: 40px; border: 1px solid var(--muted);">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+</header>
+
+<section id="unified" class="card">
+<div class="row">
+    <div class="f-1_3">
+        <label id="labelDate"><span class="required-star">*</span> التاريخ</label>
+        <input type="date" id="invoiceDate" required> 
+    </div>
+    <div class="f-1_3">
+        <label id="labelCustName"><span class="required-star">*</span> اسم العميل</label>
+        <input type="text" id="custName" placeholder="مثال: أحمد علي" required pattern="[A-Za-z\u0621-\u064A\s]+" title="اسم العميل لا يجب أن يحتوي على أرقام أو رموز خاصة">
+    </div>
+    <div class="f-1_3">
+        <label id="labelCustPhone"><span class="required-star">*</span> WhatsApp (بدون +)</label>
+        <input type="text" id="custPhone" placeholder="0123XXXXXXXXX" required pattern="[0-9]{11}" title="يجب إدخال 11 رقماً بدون رمز + في البداية">
+    </div>
+</div>
+
+<div class="row">
+    <div class="f-1_4">
+        <label id="labelEmployee"><span class="required-star">*</span> اسم الموظف</label>
+        <select id="saleEmployee" required></select>
+    </div>
+    <div class="f-1_4">
+        <label id="labelBranch"><span class="required-star">*</span> الفرع</label>
+        <select id="saleBranch" required></select>
+    </div>
+    <div class="f-1_4">
+        <label id="labelPaymentMethod"><span class="required-star">*</span> طريقة الدفع</label>
+        <select id="salePaymentMethod" required></select>
+    </div>
+    <div class="f-1_4">
+        <label id="labelClientType"><span class="required-star">*</span> Client Type</label>
+        <select id="saleClientType" required>
+            <option value="NEW">NEW</option><option value="CURRENT">CURRENT</option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="f-1_4">
+        <label id="labelProgram"><span class="required-star">*</span> Program</label>
+        <select id="saleProgram" required>
+            <option>Online</option><option>Offline</option>
+        </select>
+    </div>
+    <div class="f-1_4">
+        <label id="labelChannel"><span class="required-star">*</span> Channel</label>
+        <select id="saleChannel" required>
+            <option value="">اختر...</option>
+            <option>Facebook</option>
+            <option>WhatsApp</option>
+            <option>Instagram</option>
+            <option>Website</option>
+        </select>
+    </div>
+    <div class="col">
+        <label id="labelScreen"><span class="required-star">*</span> Screen Link</label>
+        <input id="saleScreen" type="text" required placeholder="رابط سكرين شوت التحويل/الدفع">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label id="labelNotes">ملاحظات الفاتورة/التحصيل</label>
+        <textarea id="saleNotes" placeholder="مثال: خصم / ملاحظات إضافية"></textarea>
+    </div>
+</div>
+
+
+<div style="margin-top:14px" class="card">
+<h4 class="small" id="sectionItems">الخدمات والمنتجات</h4>
+<div id="servicesList"></div>
+<div style="margin-top:10px" class="row">
+    <div style="flex:0 0 200px"><button class="btn-ghost" id="btnAddItem" onclick="addServiceRow()">+ إضافة خدمة/منتج</button></div>
+    <div style="flex:1"></div>
+</div>
+</div>
+
+
+<div class="row">
+    <div class="col"></div>
+    <div class="f-1_4">
+        <label id="labelGrandTotal"><span class="required-star">*</span> الإجمالي</label>
+        <input type="number" id="grandTotal" value="0" min="0" class="manual-total-input" required>
+    </div>
+    <div class="f-1_4">
+        <label id="labelPaidAmount"><span class="required-star">*</span> المدفوع</label>
+        <input type="number" id="paidAmount" value="0" min="0" class="manual-total-input" required>
+    </div>
+</div>
+<div class="totals">
+    <div class="box" id="boxDue">المستحق: <strong id="dueAmount" dir="ltr">0.00</strong> EGP</div>
+    <div class="box" id="boxOverpay">الزيادة: <strong id="overpay" dir="ltr">0.00</strong> EGP</div>
+</div>
+
+<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end">
+<button class="btn-ghost" id="btnPreview" onclick="previewInvoice()">👁️ معاينة</button>
+<button class="btn-ghost" id="btnDownload" onclick="downloadPDF()">📥 تحميل PDF</button>
+<button class="btn-primary" id="btnSave" onclick="saveData()">💾 حفظ الفاتورة والتحصيل</button>
+<button class="btn-ghost" id="btnReset" onclick="resetData()">إعادة تعيين</button>
+</div>
+
+<div id="afterSaveSales" style="margin-top:12px;display:none;justify-content:flex-end;align-items:center;gap:8px">
+<button class="btn-primary" id="btnWhatsapp" onclick="sendInvoiceWhatsApp()">📱 إرسال عبر واتساب</button>
+<button class="btn-ghost" id="btnPrint" onclick="printInvoice()">🖨️ طباعة</button>
+</div>
+</section>
+
+
+<footer>
+<div class="muted" id="footerText">Designed by Mohamed Younis · نظام مدمج</div>
+</footer>
+</div>
 
 <script>
-// ----- CONFIG -----
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqc3l3g3MMq12q3p3xdjKMtVguMskgGnXJOlwtu3rhEWS6XKAyyop63qpLLV_Lw_QB/exec";
-const START_INVOICE_NUMBER = 1000;
+// *** الرابط الذي زودتني به، تأكد أنه الأحدث بعد تصحيح النشر ***
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQyLBgfn66Ax5o8V2ilaPYGhbSriPM4n_qiJjNtkSwN-R3N2oTUCXTNaRsF46mWkfchQ/exec"; 
 
-// Services, books and expense categories
 const SERVICES = [
-  'Program','Conversation Program','Teens Program','Kids Program','Native Program',
-  'Speaking Club (adults)','Speaking Club (kids)','Business English','Business Writing',
-  'IELTS preparation','Placement test','Delay fees','SYE\\'s Certificate','Re-oral test',
-  'Re-do level','Late Exam','Versant Certificate','Make up session','Mock Exam','Practice Area'
+    'Program','Conversation Program','Teens Program','Kids Program','Native Program','Speaking Club (adults)','Speaking Club (kids)','Business English','Business Writing','IELTS preparation','Placement test','Delay fees','SYE\'s Certificate','Re-oral test','Re-do level','Late Exam','Versant Certificate','Make up session','Mock Exam','Practice Area'
 ];
-const BOOKS = ['Book Level 1','Book Level 2','Book Level 3','Book Level 4','Book Level 5'];
-const EXP_CATS = ['غاز','كهرباء','مياه','إكراميات','انتقالات كتب','انتقالات موظفين','مشتريات بوفية','مصروفات أخرى'];
+const BOOKS = [
+    'Book Level 1','Book Level 2','Book Level 3','Book Level 4','Book Level 5'
+];
+// Combined list for the single select input
+const ALL_ITEMS = [...SERVICES, ...BOOKS].sort();
 
-/* ---------- UI helpers ---------- */
-function showTab(tab){
-  document.getElementById('sales').style.display = (tab==='sales')? 'block':'none';
-  document.getElementById('expenses').style.display = (tab==='expenses')? 'block':'none';
-  document.getElementById('tab-sales').classList.toggle('active', tab==='sales');
-  document.getElementById('tab-expenses').classList.toggle('active', tab==='expenses');
+
+// CRM Data Arrays
+const EMPLOYEES = ['Ghada', 'Amira', 'Israa', 'Sarah', 'Salma', 'Maryam'];
+const BRANCHES = ['Nasr City', 'Dokki', 'Maadi', 'October', 'Online', '-'];
+const PAYMENT_METHODS = ['Credit card', 'InstaPay', 'VC-01001883884', 'VC-01022850171', 'VC-01064223325', 'EC-01111327387', 'فوري', 'رصيد عميل', 'تحويل من رصيد عميل لعميل آخر'];
+
+let currentInvoiceNumber = 1000; 
+let currentLang = 'ar'; // Default language
+
+// --- Language Translation Map ---
+const langMap = {
+    ar: {
+        dir: 'rtl',
+        headerTitle: 'نظام المبيعات وتسجيل التحصيل',
+        headerSubtitle: 'فاتورة وعمليات CRM مدمجة · تصميم: Mohamed Younis',
+        labelDate: 'التاريخ',
+        labelCustName: 'اسم العميل',
+        labelCustPhone: 'WhatsApp (بدون +)',
+        placeholderCustName: 'مثال: أحمد علي',
+        labelEmployee: 'اسم الموظف',
+        labelBranch: 'الفرع',
+        labelPaymentMethod: 'طريقة الدفع',
+        labelClientType: 'Client Type',
+        labelProgram: 'Program',
+        labelChannel: 'Channel',
+        labelScreen: 'Screen Link',
+        placeholderScreen: 'رابط سكرين شوت التحويل/الدفع',
+        labelNotes: 'ملاحظات الفاتورة/التحصيل',
+        placeholderNotes: 'مثال: خصم / ملاحظات إضافية',
+        sectionItems: 'الخدمات والمنتجات', // Combined section title
+        btnAddItem: '+ إضافة خدمة/منتج', // Combined button
+        labelItem: 'الخدمة/المنتج', // Label for dynamic rows
+        labelRemove: 'حذف', 
+        labelGrandTotal: 'الإجمالي',
+        labelPaidAmount: 'المدفوع',
+        boxDue: 'المستحق',
+        boxOverpay: 'الزيادة',
+        btnPreview: '👁️ معاينة',
+        btnDownload: '📥 تحميل PDF',
+        btnSave: '💾 حفظ الفاتورة والتحصيل',
+        btnReset: 'إعادة تعيين',
+        btnWhatsapp: '📱 إرسال عبر واتساب',
+        btnPrint: '🖨️ طباعة',
+        selectPlaceholder: 'اختر...',
+        alertMissingFields: 'يرجى ملء الحقول الإلزامية التالية:',
+        alertSaveSuccess: 'تم حفظ الفاتورة وبيانات التحصيل بنجاح',
+        alertCustomerNameMissing: 'يرجى إدخال اسم العميل أولاً لإنشاء اسم الملف.',
+        alertPhoneLength: 'رقم الواتساب (11 رقم)',
+        footerText: 'Designed by Mohamed Younis · نظام مدمج',
+        pdfTitle: 'فاتورة',
+        pdfInvoice: 'Invoice / فاتورة',
+        pdfCustomer: 'العميل',
+        pdfWhatsapp: 'واتساب',
+        pdfEmployee: 'الموظف',
+        pdfBranch: 'الفرع',
+        pdfDate: 'التاريخ',
+        pdfMethod: 'طريقة الدفع',
+        pdfItem: 'المنتج/الخدمة',
+        pdfQuantity: 'الكمية',
+        pdfNotes: 'ملاحظات',
+        pdfTotal: 'الإجمالي',
+        pdfPaid: 'المدفوع',
+        pdfDue: 'المستحق',
+        pdfOverpay: 'الزيادة',
+    },
+    en: {
+        dir: 'ltr',
+        headerTitle: 'SYE Sales and Collection System',
+        headerSubtitle: 'Integrated Invoice and CRM operations · Design: Mohamed Younis',
+        labelDate: 'Date',
+        labelCustName: 'Customer Name',
+        labelCustPhone: 'WhatsApp (Without +)',
+        placeholderCustName: 'Example: Ahmed Ali',
+        labelEmployee: 'Employee Name',
+        labelBranch: 'Branch',
+        labelPaymentMethod: 'Payment Method',
+        labelClientType: 'Client Type',
+        labelProgram: 'Program',
+        labelChannel: 'Channel',
+        labelScreen: 'Screen Link',
+        placeholderScreen: 'Transfer/Payment Screenshot Link',
+        labelNotes: 'Invoice/Collection Notes',
+        placeholderNotes: 'Example: Discount / Additional notes',
+        sectionItems: 'Services and Products', // Combined section title
+        btnAddItem: '+ Add Service/Product', // Combined button
+        labelItem: 'Service/Product', // Label for dynamic rows
+        labelRemove: 'Remove', 
+        labelGrandTotal: 'Grand Total',
+        labelPaidAmount: 'Paid Amount',
+        boxDue: 'Due Amount',
+        boxOverpay: 'Overpay',
+        btnPreview: '👁️ Preview',
+        btnDownload: '📥 Download PDF',
+        btnSave: '💾 Save Invoice & Collection',
+        btnReset: 'Reset',
+        btnWhatsapp: '📱 Send via WhatsApp',
+        btnPrint: '🖨️ Print',
+        selectPlaceholder: 'Select...',
+        alertMissingFields: 'Please fill the following required fields:',
+        alertSaveSuccess: 'Invoice and collection data saved successfully.',
+        alertCustomerNameMissing: 'Please enter the Customer Name first to create the file name.',
+        alertPhoneLength: 'WhatsApp Number (11 Digits)',
+        footerText: 'Designed by Mohamed Younis · Integrated System',
+        pdfTitle: 'Invoice',
+        pdfInvoice: 'Invoice / فاتورة',
+        pdfCustomer: 'Customer',
+        pdfWhatsapp: 'WhatsApp',
+        pdfEmployee: 'Employee',
+        pdfBranch: 'Branch',
+        pdfDate: 'Date',
+        pdfMethod: 'Payment Method',
+        pdfItem: 'Product/Service',
+        pdfQuantity: 'Quantity',
+        pdfNotes: 'Notes',
+        pdfTotal: 'Total',
+        pdfPaid: 'Paid',
+        pdfDue: 'Due',
+        pdfOverpay: 'Overpay',
+    }
+};
+
+let T = langMap[currentLang]; // Alias for current language texts
+
+/* Language Switching Function */
+function changeLanguage(lang) {
+    currentLang = lang;
+    T = langMap[lang];
+
+    // --- 1. Update overall page direction and attributes ---
+    document.documentElement.dir = T.dir;
+    document.body.setAttribute('data-lang', lang);
+
+    // --- 2. Update static texts and placeholders ---
+    document.getElementById('headerTitle').textContent = T.headerTitle;
+    document.getElementById('headerSubtitle').textContent = T.headerSubtitle;
+    document.getElementById('footerText').textContent = T.footerText;
+    document.getElementById('custName').placeholder = T.placeholderCustName;
+    document.getElementById('saleScreen').placeholder = T.placeholderScreen;
+    document.getElementById('saleNotes').placeholder = T.placeholderNotes;
+
+    // --- 3. Update main labels (with required star) ---
+    document.getElementById('labelDate').innerHTML = `<span class="required-star">*</span> ${T.labelDate}`;
+    document.getElementById('labelCustName').innerHTML = `<span class="required-star">*</span> ${T.labelCustName}`;
+    document.getElementById('labelCustPhone').innerHTML = `<span class="required-star">*</span> ${T.labelCustPhone}`;
+    document.getElementById('labelEmployee').innerHTML = `<span class="required-star">*</span> ${T.labelEmployee}`;
+    document.getElementById('labelBranch').innerHTML = `<span class="required-star">*</span> ${T.labelBranch}`;
+    document.getElementById('labelPaymentMethod').innerHTML = `<span class="required-star">*</span> ${T.labelPaymentMethod}`;
+    document.getElementById('labelClientType').innerHTML = `<span class="required-star">*</span> ${T.labelClientType}`;
+    document.getElementById('labelProgram').innerHTML = `<span class="required-star">*</span> ${T.labelProgram}`;
+    document.getElementById('labelChannel').innerHTML = `<span class="required-star">*</span> ${T.labelChannel}`;
+    document.getElementById('labelScreen').innerHTML = `<span class="required-star">*</span> ${T.labelScreen}`;
+    document.getElementById('labelNotes').textContent = T.labelNotes;
+    
+    // Updated Combined Section
+    document.getElementById('sectionItems').textContent = T.sectionItems; 
+    document.getElementById('btnAddItem').textContent = T.btnAddItem;
+
+    document.getElementById('labelGrandTotal').innerHTML = `<span class="required-star">*</span> ${T.labelGrandTotal}`;
+    document.getElementById('labelPaidAmount').innerHTML = `<span class="required-star">*</span> ${T.labelPaidAmount}`;
+
+    // Update Channel select placeholder
+    const channelSelect = document.getElementById('saleChannel');
+    if (channelSelect.options[0].value === "") {
+        channelSelect.options[0].textContent = T.selectPlaceholder;
+    }
+
+    // --- 4. Update action buttons ---
+    document.getElementById('btnPreview').textContent = T.btnPreview;
+    document.getElementById('btnDownload').textContent = T.btnDownload;
+    document.getElementById('btnSave').textContent = T.btnSave;
+    document.getElementById('btnReset').textContent = T.btnReset;
+    document.getElementById('btnWhatsapp').textContent = T.btnWhatsapp;
+    document.getElementById('btnPrint').textContent = T.btnPrint;
+
+    // --- 5. Update Totals boxes ---
+    const totalDue = document.getElementById('dueAmount').textContent;
+    const totalOverpay = document.getElementById('overpay').textContent;
+    
+    document.getElementById('boxDue').innerHTML = `${T.boxDue}: <strong id="dueAmount" dir="ltr">${totalDue}</strong> EGP`;
+    document.getElementById('boxOverpay').innerHTML = `${T.boxOverpay}: <strong id="overpay" dir="ltr">${totalOverpay}</strong> EGP`;
+
+    // --- 6. Update dynamic rows (Items) ---
+    // Preserve existing selection values
+    const itemsData = Array.from(document.querySelectorAll('#servicesList .serviceName')).map(s => s.value);
+
+    // Clear and re-render the lists
+    document.getElementById('servicesList').innerHTML = '';
+    
+    // Add existing items back
+    itemsData.forEach(item => addServiceRow(item, false)); 
+    
+    // If there were no items before, add the default single row
+    if (itemsData.length === 0) addServiceRow(); 
+    
+    // Update labels and buttons within dynamic rows
+    document.querySelectorAll('#servicesList .row label').forEach(l => l.textContent = T.labelItem);
+    document.querySelectorAll('#servicesList .row button.btn-ghost').forEach(b => b.textContent = T.labelRemove);
+
+    document.getElementById('langSelect').value = lang;
 }
 
-/* dynamic rows */
-function addServiceRow(defaultName, defaultQty=1, defaultPrice=0){
-  const container = document.getElementById('servicesList');
-  const wrapper = document.createElement('div');
-  wrapper.className='row card';
-  wrapper.style.marginTop='8px';
-  wrapper.style.alignItems='center';
-  wrapper.innerHTML = `
-    <div style="width:350px">
-      <label>الخدمة</label>
-      <select class="serviceName"></select>
-    </div>
-    <div style="width:120px">
-      <label>الكمية</label>
-      <input type="number" class="serviceQty" value="${defaultQty}" min="0">
-    </div>
-    <div style="width:180px">
-      <label>السعر</label>
-      <input type="number" class="servicePrice" value="${defaultPrice}" min="0">
-    </div>
-    <div style="width:100px;display:flex;align-items:flex-end;justify-content:flex-end">
-      <button class="btn-ghost" onclick="removeRow(this)">حذف</button>
-    </div>
-  `;
-  container.appendChild(wrapper);
-  const sel = wrapper.querySelector('.serviceName');
-  SERVICES.forEach(s=>{const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o)});
-  if(defaultName) sel.value = defaultName;
-  wrapper.querySelectorAll('input,select').forEach(el=>el.addEventListener('input', calculateTotals));
-  calculateTotals();
+
+/* Dynamic Item Row (Services/Books combined) */
+function addServiceRow(defaultValue = null, allowEmpty = true){
+  const container = document.getElementById('servicesList');
+  const wrapper = document.createElement('div');
+  wrapper.className='row card'; wrapper.style.marginTop='8px'; wrapper.style.alignItems='center';
+  // Item selection takes all flexible space, button fixed width
+  wrapper.innerHTML=`<div style="flex:1 1 85%;"><label>${T.labelItem}</label><select class="serviceName"></select></div>
+  <div style="flex:0 0 100px;display:flex;align-items:flex-end;justify-content:flex-end"><button class="btn-ghost" onclick="removeRow(this)">${T.labelRemove}</button></div>`;
+  container.appendChild(wrapper);
+  const sel = wrapper.querySelector('.serviceName');
+  
+  if (allowEmpty) {
+      const empty = document.createElement('option');
+      empty.value = '';
+      empty.textContent = T.selectPlaceholder;
+      sel.appendChild(empty);
+  }
+  
+  ALL_ITEMS.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o)});
+  if(defaultValue) sel.value=defaultValue;
 }
 
-function addBookRow(defaultName, defaultQty=1, defaultPrice=0){
-  const container = document.getElementById('booksList');
-  const wrapper = document.createElement('div');
-  wrapper.className='row card';
-  wrapper.style.marginTop='8px';
-  wrapper.innerHTML = `
-    <div style="width:350px">
-      <label>الكتاب</label>
-      <select class="bookName"></select>
-    </div>
-    <div style="width:120px">
-      <label>الكمية</label>
-      <input type="number" class="bookQty" value="${defaultQty}" min="0">
-    </div>
-    <div style="width:180px">
-      <label>السعر</label>
-      <input type="number" class="bookPrice" value="${defaultPrice}" min="0">
-    </div>
-    <div style="width:100px;display:flex;align-items:flex-end;justify-content:flex-end">
-      <button class="btn-ghost" onclick="removeRow(this)">حذف</button>
-    </div>
-  `;
-  container.appendChild(wrapper);
-  const sel = wrapper.querySelector('.bookName');
-  BOOKS.forEach(s=>{const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o)});
-  if(defaultName) sel.value = defaultName;
-  wrapper.querySelectorAll('input,select').forEach(el=>el.addEventListener('input', calculateTotals));
-  calculateTotals();
+
+function removeRow(btn){ 
+    const card=btn.closest('.card'); 
+    card.remove(); 
 }
 
-function removeRow(btn){
-  const card = btn.closest('.card');
-  card.remove();
-  calculateTotals();
-}
-
-/* totals */
+/* Totals (Only calculates Due/Overpay based on manual input) */
 function calculateTotals(){
-  let total = 0;
-  document.querySelectorAll('#servicesList .card').forEach(c=>{
-    const q = parseFloat(c.querySelector('.serviceQty').value || 0);
-    const p = parseFloat(c.querySelector('.servicePrice').value || 0);
-    total += q*p;
-  });
-  document.querySelectorAll('#booksList .card').forEach(c=>{
-    const q = parseFloat(c.querySelector('.bookQty').value || 0);
-    const p = parseFloat(c.querySelector('.bookPrice').value || 0);
-    total += q*p;
-  });
-  document.getElementById('grandTotal').innerText = total.toFixed(2);
-  const paid = parseFloat(document.getElementById('paidAmount').value || 0);
-  const due = Math.max(0, total - paid);
-  const over = Math.max(0, paid - total);
-  document.getElementById('dueAmount').innerText = due.toFixed(2);
-  document.getElementById('overpay').innerText = over.toFixed(2);
+    // Read total and paid amounts manually entered by user
+  const total = parseFloat(document.getElementById('grandTotal').value || 0);
+  const paid = parseFloat(document.getElementById('paidAmount').value || 0);
+    
+    // Calculate Due/Overpay
+  const due=Math.max(0,total-paid);
+  const over=Math.max(0,paid-total);
+    
+    // Update display
+  document.getElementById('dueAmount').innerText=due.toFixed(2);
+  document.getElementById('overpay').innerText=over.toFixed(2);
 }
 
-/* Preview / print / PDF helpers */
-function escapeHtml(s){ if(!s && s!==0) return ''; return String(s).replace(/[&<>"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];}); }
+/* Helper to populate select options (Used only for static fields like Employee/Branch) */
+function populateSelect(selectId, options, includeEmpty=true) {
+    const select = document.getElementById(selectId);
+    // Preserve current selection if possible
+    const currentValue = select.value;
+    
+    select.innerHTML = ''; 
+    if (includeEmpty) {
+        const empty = document.createElement('option');
+        empty.value = '';
+        empty.textContent = T.selectPlaceholder;
+        select.appendChild(empty);
+    }
+    options.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        select.appendChild(o);
+    });
+    
+    // Restore current selection
+    if (currentValue) {
+        select.value = currentValue;
+    }
+}
+
+/* Data Collection */
+function collectData(){
+  // Collect sold items list only (names)
+  const items=[];
+  document.querySelectorAll('#servicesList .card').forEach(c=>{ 
+    const name = c.querySelector('.serviceName').value;
+    if(name) items.push({name, qty: 1, price: 0}); 
+  });
+
+  const total=parseFloat(document.getElementById('grandTotal').value||0); // Manual Input
+  const paid=parseFloat(document.getElementById('paidAmount').value||0); // Manual Input
+    
+    // CRM data
+    const crmData = {
+        employee: document.getElementById('saleEmployee').value,
+        program: document.getElementById('saleProgram').value,
+        channel: document.getElementById('saleChannel').value,
+        clientType: document.getElementById('saleClientType').value,
+        branch: document.getElementById('saleBranch').value,
+        method: document.getElementById('salePaymentMethod').value,
+        screen: document.getElementById('saleScreen').value,
+        status: (total === paid) ? 'Paid' : (paid > 0 ? 'Pending' : 'Unpaid'), 
+        amount: paid 
+    };
+
+
+  return {
+        ...crmData,
+        invoiceNo: currentInvoiceNumber, 
+        date: document.getElementById('invoiceDate').value,
+        customer: document.getElementById('custName').value,
+        phone: document.getElementById('custPhone').value,
+        items, 
+        total, paid,
+        due: parseFloat(document.getElementById('dueAmount').innerText||0),
+        overpay: parseFloat(document.getElementById('overpay').innerText||0),
+        notes: document.getElementById('saleNotes').value,
+        language: currentLang
+    };
+}
+
+
+/* Save Data (Combined Sales and Collection) */
+async function saveData(){
+    const data = collectData();
+
+    // --- Detailed Validation Check ---
+    const requiredFields = [
+        { id: 'invoiceDate', name: T.labelDate, value: data.date },
+        { id: 'custName', name: T.labelCustName, value: data.customer },
+        { id: 'custPhone', name: T.labelCustPhone, value: data.phone },
+        { id: 'saleEmployee', name: T.labelEmployee, value: data.employee },
+        { id: 'saleBranch', name: T.labelBranch, value: data.branch },
+        { id: 'salePaymentMethod', name: T.labelPaymentMethod, value: data.method },
+        { id: 'saleClientType', name: T.labelClientType, value: data.clientType },
+        { id: 'saleProgram', name: T.labelProgram, value: data.program },
+        { id: 'saleChannel', name: T.labelChannel, value: data.channel },
+        { id: 'saleScreen', name: T.labelScreen, value: data.screen },
+        { id: 'grandTotal', name: T.labelGrandTotal, value: data.total, isAmount: true },
+        { id: 'paidAmount', name: T.labelPaidAmount, value: data.paid, isAmount: true }
+    ];
+
+    let missingFields = [];
+    requiredFields.forEach(field => {
+        // Check for empty string or null (amounts can be 0)
+        if (!field.value && field.value !== 0 || (typeof field.value === 'string' && field.value.trim() === '')) {
+            missingFields.push(field.name);
+        }
+        
+        // Additional check for phone number length/pattern
+        if (field.id === 'custPhone' && field.value && field.value.length !== 11) {
+            if (!missingFields.includes(T.alertPhoneLength)) missingFields.push(T.alertPhoneLength);
+        }
+    });
+
+    if (missingFields.length > 0) {
+        alert(`${T.alertMissingFields} \n- ${missingFields.join('\n- ')}`);
+        return;
+    }
+    
+    // 1. إرسال البيانات إلى Apps Script لحفظها في Google Sheet
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        // تحقق من أن الرد نفسه كان ناجحًا (حالة HTTP 200)
+        if (!response.ok) {
+            // إذا كان الرد HTTP غير 200 (مثلاً 404 أو 500)، اقرأ نص الخطأ
+            const errorText = await response.text();
+            throw new Error(`HTTP Error ${response.status}: ${errorText.substring(0, 100)}...`);
+        }
+
+        // محاولة قراءة الرد كـ JSON
+        let result;
+        try {
+            result = await response.json();
+        } catch (e) {
+            // إذا فشل تحليل JSON، فهذا يعني أن Apps Script أرجع خطأ HTML غير مُعالج
+            throw new Error("Received non-JSON response. Check Apps Script logs for detailed error.");
+        }
+
+
+        if (result.result === "success") {
+            alert(T.alertSaveSuccess);
+        } else if (result.result === "error") {
+            // إذا أرجع السكربت رسالة خطأ مُعالجة
+            alert(`فشل في الحفظ (من Apps Script): ${result.error}. التفاصيل: ${result.details}`);
+        } else {
+             alert("فشل في الحفظ: الرد من الخادم غير متوقع.");
+        }
+
+    } catch(e) {
+        // فشل اتصال الشبكة أو فشل في تحليل الـ JSON
+        alert("فشل الاتصال بخادم الحفظ. تأكد من أن رابط Apps Script صحيح ومنشور. الخطأ الفني: " + e.message);
+        console.error("Connection/Parsing Error:", e);
+        return;
+    }
+
+    // عرض أزرار ما بعد الحفظ
+    document.getElementById('afterSaveSales').style.display='flex';
+}
+
+/* Invoice helpers (PDF Generation) */
+function escapeHtml(s){ if(!s&&s!==0)return ''; return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])) }
 
 function buildInvoiceHTML(invoice){
-  const items = invoice.items.map(it => `<tr><td style="width:60%">${escapeHtml(it.name)}</td><td style="width:15%">${it.qty}</td><td style="width:25%">${(it.qty*it.price).toFixed(2)} EGP</td></tr>`).join('');
-  return `
-    <div style="padding:12px;font-family:inherit;color:#123">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <img src="https://syecommunity.com/wp-content/uploads/2020/12/SYE-Logo.png" style="height:48px" />
-        </div>
-        <div style="text-align:left">
-          <div style="font-weight:800;color:#0b3b47">Invoice / فاتورة</div>
-          <div class="small muted">No: ${invoice.invoiceNo}</div>
-          <div class="small muted">${invoice.date}</div>
-        </div>
-      </div>
+  const pdfT = langMap[invoice.language]; 
+  const direction = pdfT.dir;
+  const textAlign = (direction === 'rtl' ? 'right' : 'left');
 
-      <hr style="margin:12px 0;border:none;border-top:1px solid #eef6f8" />
-      <div style="display:flex;gap:12px;justify-content:space-between">
-        <div>
-          <div><strong>العميل:</strong> ${escapeHtml(invoice.customer)}</div>
-          <div class="muted small">واتساب: ${escapeHtml(invoice.phone || '-')}</div>
-          <div class="muted small">ملاحظات: ${escapeHtml(invoice.notes || '-')}</div>
-        </div>
-        <div style="text-align:left">
-          <div><strong>الإجمالي:</strong> ${invoice.total.toFixed(2)} EGP</div>
-          <div class="muted small"><strong>المدفوع:</strong> ${invoice.paid.toFixed(2)} EGP</div>
-          <div class="muted small"><strong>المتبقي:</strong> ${invoice.due.toFixed(2)} EGP</div>
-        </div>
-      </div>
-
-      <table style="margin-top:12px;width:100%;border-collapse:collapse">
-        <thead>
-          <tr><th style="text-align:right;padding:8px;background:#fbfeff;border:1px solid #f0f6f8">الخدمة / الكتاب</th><th style="padding:8px;background:#fbfeff;border:1px solid #f0f6f8">الكمية</th><th style="padding:8px;background:#fbfeff;border:1px solid #f0f6f8">المجموع</th></tr>
-        </thead>
-        <tbody>${items}</tbody>
-      </table>
-
-      <div style="margin-top:18px;text-align:center;color:#8896a0">Thank you / شكراً لتعاملكم معنا</div>
-      <div style="margin-top:6px;text-align:center;color:#b3c1c7;font-size:12px">Designed by Mohamed Younis</div>
-    </div>
-  `;
+  const items = invoice.items.map(it=>`<tr><td style="width:75%; text-align: ${textAlign};">${escapeHtml(it.name)}</td><td style="width:25%; direction:ltr; text-align:left;">1</td></tr>`).join('');
+  
+  return `<div style="padding:12px;font-family:inherit;color:#123; direction:${direction}">
+  <div style="display:flex;justify-content:space-between;align-items:center; flex-direction: ${direction === 'rtl' ? 'row-reverse' : 'row'};">
+  <div><img src="https://syecommunity.com/wp-content/uploads/2020/12/SYE-Logo.png" style="height:48px" /></div>
+  <div style="text-align:${textAlign}"><div style="font-weight:800;color:#0b3b47">${pdfT.pdfInvoice}</div></div> 
+  </div>
+  <hr style="margin:12px 0;border-color:#e6eef2" />
+  <div style="display:flex;justify-content:space-between; flex-direction: ${direction === 'rtl' ? 'row-reverse' : 'row'}; text-align: ${textAlign};">
+  <div><strong>${pdfT.pdfCustomer}:</strong> ${escapeHtml(invoice.customer)}<br><strong>${pdfT.pdfWhatsapp}:</strong> <span dir="ltr">20${escapeHtml(invoice.phone)}</span><br><strong>${pdfT.pdfEmployee}:</strong> ${escapeHtml(invoice.employee)}<br><strong>${pdfT.pdfBranch}:</strong> ${escapeHtml(invoice.branch)}</div>
+  <div><strong>${pdfT.pdfDate}:</strong> <span dir="ltr">${invoice.date}</span><br><strong>${pdfT.pdfMethod}:</strong> ${escapeHtml(invoice.method)}</div>
+  </div>
+  <table style="margin-top:12px;border:1px solid #e6eef2; direction:${direction}"><thead><tr><th style="text-align: ${textAlign}">${pdfT.pdfItem}</th><th style="text-align: ${textAlign}">${pdfT.pdfQuantity}</th></tr></thead><tbody>${items}</tbody></table>
+  <div class="totals" style="margin-top:12px; border-top: 1px solid #e6eef2; padding-top: 12px; justify-content: ${direction === 'rtl' ? 'flex-start' : 'flex-end'}; flex-direction: column; align-items: ${direction === 'rtl' ? 'flex-end' : 'flex-end'};">
+  <div class="box" style="width: 250px;">${pdfT.pdfTotal}: <span dir="ltr">${invoice.total.toFixed(2)}</span> EGP</div>
+  <div class="box" style="width: 250px;">${pdfT.pdfPaid}: <span dir="ltr">${invoice.paid.toFixed(2)}</span> EGP</div>
+  <div class="box" style="width: 250px;">${pdfT.pdfDue}: <span dir="ltr">${invoice.due.toFixed(2)}</span> EGP</div>
+  <div class="box" style="width: 250px;">${pdfT.pdfOverpay}: <span dir="ltr">${invoice.overpay.toFixed(2)}</span> EGP</div></div>
+  <div style="margin-top:12px; text-align: ${textAlign};"><strong>${pdfT.pdfNotes}:</strong> ${escapeHtml(invoice.notes)}</div></div>`;
 }
 
-function previewInvoice(){
-  calculateTotals();
-  const invoice = gatherInvoice(false);
-  const html = buildInvoiceHTML(invoice);
-  // remove previous preview nodes (except actions)
-  const container = document.getElementById('previewContent');
-  Array.from(container.children).forEach(ch => { if(!ch.classList.contains('actions')) ch.remove(); });
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  container.prepend(div);
-  const modal = document.getElementById('previewModal');
-  modal.style.display = 'flex';
-  modal.setAttribute('aria-hidden','false');
+function previewInvoice() {
+    const data = collectData();
+    const w = window.open('', '_blank');
+    w.document.write('<html><head><title>' + langMap[data.language].pdfTitle + '</title><style>@page{size: A4; margin: 15mm;} body{font-family: \'Tajawal\', sans-serif;}</style></head><body>' + buildInvoiceHTML(data) + '</body></html>');
+    w.document.close();
 }
 
-function closePreview(){ const modal = document.getElementById('previewModal'); modal.style.display='none'; modal.setAttribute('aria-hidden','true'); }
 
-function printPreview(){
-  const modal = document.getElementById('previewContent');
-  const content = modal.querySelector('div').innerHTML;
-  const w = window.open('','printWindow','width=900,height=700');
-  w.document.write('<html dir="rtl"><head><meta charset="utf-8"><title>Print</title></head><body>'+content+'</body></html>');
-  w.document.close();
-  w.focus();
-  setTimeout(()=>{ w.print(); }, 500);
+function downloadPDF(){ 
+    const data = collectData();
+    if(!data.customer){alert(T.alertCustomerNameMissing); return;}
+    generateCleanPDF(data); 
 }
 
-function downloadPDFFromPreview(){
-  const modal = document.getElementById('previewContent');
-  const content = modal.querySelector('div').innerHTML;
-  const el = document.createElement('div'); el.innerHTML = content; document.body.appendChild(el);
-  const opt = { margin:0.4, filename: 'invoice.pdf', image:{ type:'jpeg', quality:0.98 }, html2canvas:{ scale:2 }, jsPDF:{unit:'in',format:'a4',orientation:'portrait'} };
-  html2pdf().set(opt).from(el).save().then(()=>el.remove());
+function generateCleanPDF(invoice){
+  const div=document.createElement('div'); div.innerHTML=buildInvoiceHTML(invoice);
+  // Format file name: Invoice-[Customer Name]-[Date].pdf
+  const fileName = `Invoice-${invoice.customer}-${invoice.date}.pdf`;
+  html2pdf().set({
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { avoid: '.card' },
+    margin: 10 // Smaller margin for better fit
+}).from(div).save(fileName);
 }
 
-/* helper to print/download from main UI */
-function printInvoice(){ previewInvoice(); setTimeout(()=>printPreview(),300); }
-function downloadPDF(){ previewInvoice(); setTimeout(()=>downloadPDFFromPreview(),300); }
+function sendInvoiceWhatsApp(){
+  const invoice = collectData();
+ // 1. Remove any non-digit characters from the phone number
+  const cleanPhone = invoice.phone.replace(/\D/g, ''); 
+ // 2. Prepend '20' (Egypt country code)
+  const fullWhatsappNumber = '20' + cleanPhone; 
 
-/* gather invoice object from form */
-function gatherInvoice(includeInvoiceNo=true){
-  const inv = {};
-  inv.invoiceNo = document.getElementById('invoiceNo').value || '';
-  inv.date = document.getElementById('invoiceDate').value || new Date().toLocaleString();
-  inv.customer = document.getElementById('custName').value;
-  inv.phone = document.getElementById('custPhone').value;
-  inv.notes = document.getElementById('saleNotes').value;
-  inv.items = [];
-  document.querySelectorAll('#servicesList .card').forEach(c=>{
-    const name = c.querySelector('.serviceName').value;
-    const qty = parseFloat(c.querySelector('.serviceQty').value||0);
-    const price = parseFloat(c.querySelector('.servicePrice').value||0);
-    if(qty>0 && price>=0) inv.items.push({type:'service',name,qty,price});
-  });
-  document.querySelectorAll('#booksList .card').forEach(c=>{
-    const name = c.querySelector('.bookName').value;
-    const qty = parseFloat(c.querySelector('.bookQty').value||0);
-    const price = parseFloat(c.querySelector('.bookPrice').value||0);
-    if(qty>0 && price>=0) inv.items.push({type:'book',name,qty,price});
-  });
-  inv.total = parseFloat(document.getElementById('grandTotal').innerText || 0);
-  inv.paid = parseFloat(document.getElementById('paidAmount').value || 0);
-  inv.due = parseFloat(document.getElementById('dueAmount').innerText || 0);
-  inv.overpay = parseFloat(document.getElementById('overpay').innerText || 0);
-  return inv;
+  // Call generateCleanPDF to download a copy, then open WhatsApp link
+  generateCleanPDF(invoice); 
+  
+ // Use wa.me/number to open chat directly
+  const waUrl=`https://wa.me/${fullWhatsappNumber}?text=${encodeURIComponent(T.pdfCustomer + ': ' + invoice.customer + ' - ' + T.pdfTotal + ': ' + invoice.total.toFixed(2) + ' EGP')}`;
+  window.open(waUrl,'_blank');
 }
 
-/* ========== SAVE SALE ========== */
-async function saveSale(){
-  calculateTotals();
-  const inv = gatherInvoice();
-  if(!inv.customer){ alert('ادخل اسم العميل'); return; }
+/* Reset */
+function resetData(){
+    // Store current language to restore lists correctly
+    const currentSelectedLang = currentLang; 
+    
+  document.getElementById('servicesList').innerHTML='';
+  document.getElementById('custName').value='';
+  document.getElementById('custPhone').value='';
+  document.getElementById('paidAmount').value=0;
+  document.getElementById('grandTotal').value=0;
+  document.getElementById('saleNotes').value='';
+  // Reset select options to empty/default
+  document.getElementById('saleEmployee').value=''; 
+  document.getElementById('saleBranch').value='';
+  document.getElementById('salePaymentMethod').value='';
+  document.getElementById('saleChannel').value=''; // Reset channel
+  document.getElementById('saleScreen').value='';
+  document.getElementById('saleProgram').value='Online';
+  document.getElementById('saleClientType').value='NEW';
 
-  const payload = {
-    sheet: 'Sales',
-    invoiceNo: inv.invoiceNo,
-    date: new Date().toISOString(),
-    customer: inv.customer,
-    phone: inv.phone,
-    items: inv.items,
-    total: inv.total,
-    paid: inv.paid,
-    due: inv.due,
-    overpay: inv.overpay,
-    notes: inv.notes
-  };
-
-  try{
-    const res = await fetch(SCRIPT_URL, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const text = await res.text();
-    alert(text || 'تم الحفظ');
-    showAfterSave(inv);
-  }catch(e){
-    console.error(e);
-    alert('خطأ في الحفظ. تأكد من رابط الـ Web App ومنح الأذونات.');
-  }
+  document.getElementById('afterSaveSales').style.display='none';
+  calculateTotals();
+  
+  // Add the *single* default item row
+  addServiceRow(); 
+  
+  // Ensure static selects use the current language's placeholder again
+  populateSelect('saleEmployee', EMPLOYEES);
+  populateSelect('saleBranch', BRANCHES);
+  populateSelect('salePaymentMethod', PAYMENT_METHODS);
 }
 
-/* show whatsapp & export after save */
-function showAfterSave(inv){
-  const phone = (inv.phone || '').replace(/[^0-9]/g,'');
-  const msgLines = [];
-  msgLines.push(`فاتورة جديدة من SYE 🎓`);
-  msgLines.push(`Invoice No: #${inv.invoiceNo}`);
-  msgLines.push(`العميل: ${inv.customer}`);
-  msgLines.push(`---`);
-  inv.items.forEach(it => msgLines.push(`${it.name} x${it.qty} - ${(it.qty*it.price).toFixed(2)} EGP`));
-  msgLines.push(`---`);
-  msgLines.push(`الإجمالي: ${inv.total.toFixed(2)} EGP`);
-  msgLines.push(`المدفوع: ${inv.paid.toFixed(2)} EGP`);
-  msgLines.push(`المتبقي: ${inv.due.toFixed(2)} EGP`);
-  msgLines.push('');
-  msgLines.push('Thank you / شكراً لتعاملكم معنا');
-
-  const waLink = phone ? `https://wa.me/${phone}?text=${encodeURIComponent(msgLines.join('\\n'))}` : null;
-  if(waLink){
-    const a = document.getElementById('waLink');
-    a.href = waLink;
-    a.style.display='inline-block';
-  }
-  document.getElementById('afterSaveSales').style.display='flex';
+function printInvoice(){
+  const w=window.open(''); 
+  w.document.write('<html><head><title>' + T.pdfTitle + '</title><style>@page{size: A4; margin: 15mm;} body{font-family: \'Tajawal\', sans-serif;}</style></head><body>' + buildInvoiceHTML(collectData()) + '</body></html>');
+  w.print(); 
+  w.close();
 }
 
-/* confirm save from preview button: save then open whatsapp */
-async function confirmSaveFromPreview(){
-  const inv = gatherInvoice();
-  await saveSale();
-  const phone = (inv.phone || '').replace(/[^0-9]/g,'');
-  if(phone){
-    const msg = buildWhatsappMessage(inv);
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-  }
-  closePreview();
-}
 
-/* build whatsapp message bilingual */
-function buildWhatsappMessage(inv){
-  const lines = [];
-  lines.push(`فاتورة جديدة من SYE 🎓`);
-  lines.push(`Invoice No: #${inv.invoiceNo}`);
-  lines.push(`العميل: ${inv.customer}`);
-  lines.push('---');
-  inv.items.forEach(it => lines.push(`${it.name} x${it.qty} - ${(it.qty*it.price).toFixed(2)} EGP`));
-  lines.push('---');
-  lines.push(`الإجمالي: ${inv.total.toFixed(2)} EGP`);
-  lines.push(`Paid: ${inv.paid.toFixed(2)} EGP`);
-  lines.push(`Due: ${inv.due.toFixed(2)} EGP`);
-  lines.push('');
-  lines.push('Thank you / شكراً لتعاملكم معنا');
-  return lines.join('\\n');
-}
-
-/* ========== EXPENSES ========== */
-function populateExpenseCats(){
-  const sel = document.getElementById('expenseCategory');
-  sel.innerHTML = '';
-  EXP_CATS.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o) });
-}
-
-async function saveExpense(){
-  const expense = {
-    sheet: 'Expenses',
-    date: new Date().toISOString(),
-    category: document.getElementById('expenseCategory').value,
-    detail: document.getElementById('expenseDetail').value,
-    amount: parseFloat(document.getElementById('expenseAmount').value || 0),
-    notes: document.getElementById('expenseNotes').value
-  };
-  if(!expense.amount || expense.amount<=0){ alert('اكتب مبلغ صحيح'); return; }
-  try{
-    const res = await fetch(SCRIPT_URL, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(expense)
-    });
-    const text = await res.text();
-    document.getElementById('expenseSaved').style.display='block';
-    setTimeout(()=>document.getElementById('expenseSaved').style.display='none',3000);
-  }catch(e){ console.error(e); alert('حدث خطأ أثناء حفظ المصروف'); }
-}
-
-/* ========== invoice numbering support ========== */
-async function loadLastInvoiceNumber(){
-  document.getElementById('invoiceDate').value = new Date().toLocaleString();
-  try{
-    const res = await fetch(SCRIPT_URL + '?action=lastInvoice');
-    if(!res.ok) throw new Error('no');
-    const j = await res.json();
-    let last = parseInt(j.last || 0);
-    if(!last || last < START_INVOICE_NUMBER) last = START_INVOICE_NUMBER;
-    const next = last + 1;
-    document.getElementById('invoiceNo').value = next;
-  }catch(e){
-    const next = START_INVOICE_NUMBER + 1;
-    document.getElementById('invoiceNo').value = next;
-  }
-}
-
-/* reset sale */
-function resetSale(){
-  document.getElementById('custName').value = '';
-  document.getElementById('custPhone').value = '';
-  document.getElementById('saleNotes').value = '';
-  document.getElementById('paidAmount').value = 0;
-  document.getElementById('servicesList').innerHTML = '';
-  document.getElementById('booksList').innerHTML = '';
-  addServiceRow(); addBookRow(); calculateTotals();
-  document.getElementById('afterSaveSales').style.display='none';
-  loadLastInvoiceNumber();
-}
-
-/* init */
+/* Init */
 function init(){
-  populateExpenseCats();
-  addServiceRow();
-  addBookRow();
+  // Initialize language based on default (ar)
+  changeLanguage(currentLang);
+    
+  // Date in YYYY-MM-DD format (LTR) - Set default today
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('invoiceDate').value=today; 
+  
+  // Populate static select fields after language is set
+  populateSelect('saleEmployee', EMPLOYEES);
+  populateSelect('saleBranch', BRANCHES);
+  populateSelect('salePaymentMethod', PAYMENT_METHODS);
+  
+  // Set default values for CRM fields
+  document.getElementById('saleProgram').value = 'Online';
+  document.getElementById('saleClientType').value = 'NEW';
+  
+  // Attach change listener to manual total inputs
+  document.getElementById('grandTotal').addEventListener('input', calculateTotals);
+  document.getElementById('paidAmount').addEventListener('input', calculateTotals);
+
+  // Add the ONE initial row
+  addServiceRow(); 
   calculateTotals();
-  loadLastInvoiceNumber();
 }
-document.addEventListener('input', function(e){ if(['paidAmount'].includes(e.target.id)) calculateTotals(); });
-init();
+document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
 </html>
