@@ -225,7 +225,7 @@ footer{text-align:center;margin-top:26px;color:var(--muted);font-size:13px}
 
 <script>
 // *** الرابط الذي زودتني به، تأكد أنه الأحدث بعد تصحيح النشر ***
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQyLBgfn66Ax5o8V2ilaPYGhbSriPM4n_qiJjNtkSwN-R3N2oTUCXTNaRsF46mWkfchQ/exec"; 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxtqWRt90TQn01fLTt-rBK2dHoymyTutITnLBl44Z4Li9SHEXonxRDWdK3Ndag8DAA5sg/exec"; 
 
 const SERVICES = [
     'Program','Conversation Program','Teens Program','Kids Program','Native Program','Speaking Club (adults)','Speaking Club (kids)','Business English','Business Writing','IELTS preparation','Placement test','Delay fees','SYE\'s Certificate','Re-oral test','Re-do level','Late Exam','Versant Certificate','Make up session','Mock Exam','Practice Area'
@@ -588,14 +588,12 @@ async function saveData(){
     }
     
     // 1. إرسال البيانات إلى Apps Script لحفظها في Google Sheet
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            // ⚠️ تم حذف الـ Headers بالكامل لتجنب أخطاء CORS و Content-Type
+        });
         
         // تحقق من أن الرد نفسه كان ناجحًا (حالة HTTP 200)
         if (!response.ok) {
